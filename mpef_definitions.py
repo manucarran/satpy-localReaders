@@ -75,7 +75,7 @@ class ImageNavigation(object):
                        ]
 
 class MpefHeader(object):
-
+    
     # 24 bytes
     images_used = [
                    ('Padding1', 'S2'),
