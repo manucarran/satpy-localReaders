@@ -1,0 +1,19 @@
+reader:
+  description: NetCDF4 reader for the Eumetsat MSG OCA format
+  name: nc_oca_l2
+  sensors: [seviri]
+  reader: !!python/name:satpy.readers.yaml_reader.FileYAMLReader
+
+file_types:
+    nc_oca_l2:
+        file_reader: !!python/name:satpy.readers.nc_oca_l2.NcOCAFileHandler
+        file_patterns: ['OCA_SEV_{sat_id:6s}_{year:4s}{month:2s}{day:2s}_{hour:2s}{min:2s}.nc']
+datasets:
+
+  ctp:
+    name: ctp
+    resolution: 3000.403165817
+    file_type: nc_oca_l2
+    nc_key: 'ctp'
+#    sensor: seviri
+
