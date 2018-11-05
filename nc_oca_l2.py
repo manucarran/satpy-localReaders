@@ -35,7 +35,7 @@ from pyresample.utils import get_area_def
 from satpy.dataset import Dataset
 from satpy.readers.file_handlers import BaseFileHandler
 from satpy.utils import proj_units_to_meters
-
+from satpy import CHUNK_SIZE
 logger = logging.getLogger(__name__)
 
 PLATFORM_NAMES = {'MET-08': 'Meteosat-8',
@@ -55,9 +55,9 @@ class NcOCAFileHandler(BaseFileHandler):
         
         self.nc = xr.open_dataset(self.filename,
                                   decode_cf=True,
-                                  mask_and_scale=False,)
-##                                  chunks={'num_columns_vis_ir': CHUNK_SIZE,
-##                                          'num_rows_vis_ir': CHUNK_SIZE})
+                                  mask_and_scale=False,
+                                  chunks={'number_tie_points_act': CHUNK_SIZE,
+                                          'number_tie_points_alt': CHUNK_SIZE})
 
 #        import pdb; pdb.set_trace()        
         self.nc.attrs['x']= int(self.nc.dims['number_tie_points_act'])
@@ -87,7 +87,7 @@ class NcOCAFileHandler(BaseFileHandler):
 
     def get_dataset(self, dataset_id, dataset_info):
         
-        dataset = self.nc[dataset_info['nc_key']]        
+        dataset = self.nc[dataset_info['nc_key']]
         dataset.attrs.update(dataset_info)	
 	
         # Correct for the scan line order (N->S) and (W->E)
