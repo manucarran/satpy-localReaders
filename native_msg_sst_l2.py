@@ -37,25 +37,20 @@ from satpy.readers.eum_base import recarray2dict
 from .mpef_definitions import GlobalTypes, ImageNavigation,  MpefHeader
 from .mpef_generic_functions import  mpefGenericFuncs
 
+logger = logging.getLogger('native_msg_sst')
 
-logger = logging.getLogger('native_msg_scenes')
-
-class MSGClaIntFileHandler(BaseFileHandler):
+class MSGSstFileHandler(BaseFileHandler):
     def __init__(self, filename, filename_info, filetype_info):
-        super(MSGClaIntFileHandler, self).__init__(filename, filename_info, filetype_info)
-        print ('filetype info',filename_info)
+        super(MSGSstFileHandler, self).__init__(filename, filename_info, filetype_info)
         self.platform_name=filename_info['satellite']
         self.subsat=filename_info['subsat']
         self.rc_start=filename_info['start_time']
-        print ('start time',self.rc_start)
         self.header = {}
         self.mda = {}
         self._read_header()
         # Prepare dask-array
         self.dask_array = da.from_array(self._get_memmap(), chunks=(CHUNK_SIZE,))
         
-    
-            
     @property
     def start_time(self):
         start_time=self.rc_start
@@ -68,27 +63,21 @@ class MSGClaIntFileHandler(BaseFileHandler):
 	    
     def _get_data_dtype(self):
         """Get the dtype of the file based on the actual available channels"""
-        lrec = [
-            ('SCE', np.uint8),
-            ('EFF', np.uint8),
-            ('CTP', np.uint16),
-            ('CTT', np.uint16),
-            ('Flags', np.uint8),
-            ('SCEPerConf', np.uint8)
-            ]
-            
         drec = np.dtype([('ImageLineNo', np.int16),
-                         ('LineRecord', lrec, (3712,))])
+                        ('sst', np.int16, (3712,))])
 
         dt = np.dtype([('DataRecord', drec, (1,))])
         dt = dt.newbyteorder('>')
+        
         return dt
     
     
     def _get_memmap(self):
         """Get the memory map for the SEVIRI data"""
         with open(self.filename) as fp:
+
             data_dtype = self._get_data_dtype()
+            
             return np.memmap(fp, dtype=data_dtype,
                              shape=(self.mda['number_of_lines'],),
                              offset=self.hdr_size, mode="r")
@@ -108,7 +97,6 @@ class MSGClaIntFileHandler(BaseFileHandler):
         
         self.hdr_size= np.dtype(header_record).itemsize 
         
-        
         if self.subsat == 'E0000':
             self.ssp_lon=0.0
         elif self.subsat == 'E0415':
@@ -116,8 +104,9 @@ class MSGClaIntFileHandler(BaseFileHandler):
         elif self.subsat == 'E0095':
             self.ssp_lon=9.5
         else:
-            self.ssp_lon=0.0                
+             self.ssp_lon=0.0                
 
+        
         self.header = self.header.newbyteorder('>')
         self.mda['number_of_lines'] = self.header['image_structure']['NoLines'][0]
         self.mda['number_of_columns'] =  self.header['image_structure']['NoColumns'][0]
@@ -127,6 +116,7 @@ class MSGClaIntFileHandler(BaseFileHandler):
     
     
     def get_area_def(self, dsid):
+        
         nlines = self.mda['number_of_lines']
         ncols = self.mda['number_of_columns']
         return mpefGenericFuncs.get_area_def(dsid,nlines,ncols,self.ssp_lon)
@@ -136,34 +126,31 @@ class MSGClaIntFileHandler(BaseFileHandler):
 
         channel = dsid.name
         shape = (self.mda['number_of_lines'], self.mda['number_of_columns'])
-        raw = self.dask_array['DataRecord']['LineRecord']['{}'.format(channel)].astype(np.uint16)
-        
-        raw1 = self.dask_array['DataRecord']['LineRecord'][:]
+        raw = self.dask_array['DataRecord']['sst']
         
         data=raw[:,0,:]
+        shifted = np.left_shift(data, 5).astype(np.uint16)
+        tmp = np.right_shift(shifted, 5)
+        not_processed = np.where(tmp == 8)
+        data = np.array(tmp.astype(np.float32))
+        
+        #data[not_processed] = np.nan
         
         data = da.flipud(da.fliplr((data.reshape(shape))))
-        #xarr = xr.DataArray(data, dims=['y', 'x']).where(data != 0)
         xarr = xr.DataArray(data, dims=['y', 'x'])
-        
+
         if xarr is None:
             dataset = None
         else:
             dataset = xarr
-            
-            if channel == 'CTT' or channel=='CTP':
-                dataset=dataset.where(dataset!=64537.)
-            if channel == 'EFF' or channel=='SCE':
-                dataset=dataset.where(dataset!=0.)    
-            if channel == 'CTT':
-                dataset+=170
-                    
+            dataset*=0.1    
+            dataset+=170.
             dataset.attrs['units'] = info['units']
             dataset.attrs['wavelength'] = info['wavelength']
             dataset.attrs['standard_name'] = info['standard_name']
             dataset.attrs['platform_name'] = self.platform_name
             dataset.attrs['sensor'] = 'seviri'
-            
+        
         return dataset	        
 	    
 

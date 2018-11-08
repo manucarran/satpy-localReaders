@@ -1,0 +1,194 @@
+reader:
+  description: MSG Native Reader
+  name: native_msg_oca_l2
+  sensors: [seviri]
+  default_channels: [Mean]
+  reader: !!python/name:satpy.readers.yaml_reader.FileYAMLReader
+
+file_types:
+  native_msg_oca_l2:
+    file_reader: !!python/name:LOCAL_READERS.readers.native_msg_oca_l2.MSGOcaFileHandler
+    file_patterns: ['OCAProduct_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
+    
+datasets:
+  ctp:
+    name: ctp
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+  ctp2:
+    name: ctp2
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+  cot2:
+    name: cot2
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+  ecot2:
+    name: ecot2
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+  ectp2:
+    name: ectp2
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+  ecot:
+    name: ecot
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+  ectp:
+    name: ectp
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+  cph:
+    name: cph
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+  ecre:
+    name: ecre
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+  cot:
+    name: cot
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+  jm:
+    name: jm
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+  cre:
+    name: cre
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_oca_l2
+      

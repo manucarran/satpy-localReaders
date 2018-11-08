@@ -35,17 +35,15 @@ from pyresample import geometry
 from satpy.readers.file_handlers import BaseFileHandler
 from satpy.readers.eum_base import recarray2dict
 from .mpef_definitions import GlobalTypes, ImageNavigation,  MpefHeader
-
+from .mpef_generic_functions import  mpefGenericFuncs
 
 logger = logging.getLogger('native_msg_scenes')
 
 class MSGScenesFileHandler(BaseFileHandler):
     def __init__(self, filename, filename_info, filetype_info):
         super(MSGScenesFileHandler, self).__init__(filename, filename_info, filetype_info)
-        print ('self1',filename_info)
         self.platform_name=filename_info['satellite']
         self.subsat=filename_info['subsat']
-        print (filename_info['start_time'])
         self.rc_start=filename_info['start_time']
         self.header = {}
         self.mda = {}
@@ -102,20 +100,6 @@ class MSGScenesFileHandler(BaseFileHandler):
                            dtype=header_record, count=1)
         
         self.hdr_size= np.dtype(header_record).itemsize 
-        
-        
-        #self.platform_id = int(self.header['mpef_product_header']['SpacecraftName'])
-        #self.platform_name = "Meteosat-" + str(self.platform_id)
-        
-        print (self.platform_name)
-        print (self.subsat)
-        
-        #~ if self.header['mpef_product_header']['Mission'].astype('|U3') == 'E0000':
-            #~ ssp_lon=0.0
-        #~ elif self.header['mpef_product_header']['Mission'].astype('|U3') == 'E0415':
-            #~ ssp_lon=41.5
-        #~ else:
-            #~ ssp_lon=9.5
             
         if self.subsat == 'E0000':
             ssp_lon=0.0
@@ -140,96 +124,29 @@ class MSGScenesFileHandler(BaseFileHandler):
         ncols = self.mda['number_of_columns']
 
     
-    def get_area_def(self, dsid):
-
-        a = self.mda['projection_parameters']['a']
-        b = self.mda['projection_parameters']['b']
-        h = self.mda['projection_parameters']['h']
-        lon_0 = self.mda['projection_parameters']['ssp_longitude']
-
-        proj_dict = {'a': float(a),
-                     'b': float(b),
-                     'lon_0': float(lon_0),
-                     'h': float(h),
-                     'proj': 'geos',
-                     'units': 'm'}
-
+    def get_area_def(self, dsid):        
         nlines = self.mda['number_of_lines']
         ncols = self.mda['number_of_columns']
-
-        area = geometry.AreaDefinition(
-            'some_area_name',
-            "On-the-fly area",
-            'geosmsg',
-            proj_dict,
-            ncols,
-            nlines,
-            self.get_area_extent(dsid))
-
-        return area
-
-    def get_area_extent(self, dsid):
-        # following calculations assume grid origin is south-east corner
-        # section 7.2.4 of MSG Level 1.5 Image Data Format Description
-        # origins = {0: 'NW', 1: 'SW', 2: 'SE', 3: 'NE'}
-        # grid_origin = data15hd['ImageDescription'][
-        #     "ReferenceGridVIS_IR"]["GridOrigin"]
-        # if grid_origin != 2:
-        #     raise NotImplementedError(
-        #         'Grid origin not supported number: {}, {} corner'
-        #         .format(grid_origin, origins[grid_origin])
-        #     )
-
-        center_point = self.mda['number_of_lines']/2
-
-        north = self.mda['number_of_lines']
-        east = self.mda['number_of_columns']
-        west = 0
-        south = 0
-
-        # column_step = data15hd['ImageDescription'][
-        #     "ReferenceGridVIS_IR"]["ColumnDirGridStep"] * 1000.0
-        # line_step = data15hd['ImageDescription'][
-        #     "ReferenceGridVIS_IR"]["LineDirGridStep"] * 1000.0
-        # # section 3.1.4.2 of MSG Level 1.5 Image Data Format Description
-        # earth_model = data15hd['GeometricProcessing']['EarthModel'][
-        #     'TypeOfEarthModel']
-        # if earth_model == 2:
-        #     ns_offset = 0  # north +ve
-        #     we_offset = 0  # west +ve
-        # elif earth_model == 1:
-        #     ns_offset = -0.5  # north +ve
-        #     we_offset = 0.5  # west +ve
-        # else:
-        #     raise NotImplementedError(
-        #         'unrecognised earth model: {}'.format(earth_model)
-        #     )
-
-        # section 3.1.5 of MSG Level 1.5 Image Data Format Description
-        # ll_c = (center_point - west - 0.5 + we_offset) * column_step
-        # ll_l = (south - center_point - 0.5 + ns_offset) * line_step
-        # ur_c = (center_point - east + 0.5 + we_offset) * column_step
-        # ur_l = (north - center_point + 0.5 + ns_offset) * line_step
-        area_extent =  (-5570248.477339745, -5567248.074173927, 5567248.074173927, 5570248.477339745)
-        #area_extent = (ll_c, ll_l, ur_c, ur_l)
-
-        return area_extent
+        lon_0=self.mda['projection_parameters']['ssp_longitude']
+        return mpefGenericFuncs.get_area_def(dsid,nlines,ncols,lon_0)
+        
 
     def get_dataset(self, dsid, info,
                     xslice=slice(None), yslice=slice(None)):
 
         channel = dsid.name
-        
+
         shape = (self.mda['number_of_lines'], self.mda['number_of_columns'])
         raw = self.dask_array['DataRecord']['LineRecord']['SceneType']
-        data=raw[:,0,:].flatten()
+        data=raw[:,0,:]
+        
         data = da.flipud(da.fliplr((data.reshape(shape))))
         xarr = xr.DataArray(data, dims=['y', 'x']).where(data != 0).astype(np.float32)
-
         if xarr is None:
             dataset = None
         else:
             dataset = xarr
+            #dataset=dataset.where(dataset<50.) 
             dataset.attrs['units'] = info['units']
             dataset.attrs['wavelength'] = info['wavelength']
             dataset.attrs['standard_name'] = info['standard_name']

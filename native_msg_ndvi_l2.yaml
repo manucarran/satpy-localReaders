@@ -1,18 +1,18 @@
 reader:
   description: MSG Native Reader
-  name: native_msg_cla_int_l2
+  name: native_msg_ndvi_l2
   sensors: [seviri]
-  default_channels: [CLA]
+  default_channels: [Mean]
   reader: !!python/name:satpy.readers.yaml_reader.FileYAMLReader
 
 file_types:
-  native_msg_cla_int_l2:
-    file_reader: !!python/name:LOCAL_READERS.readers.native_msg_cla_int_l2.MSGClaIntFileHandler
-    file_patterns: ['CLAIntmProduct_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
+  native_msg_ndvi_l2:
+    file_reader: !!python/name:LOCAL_READERS.readers.native_msg_ndvi_l2.MSGNdviFileHandler
+    file_patterns: ['NDVIProduct_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
     
 datasets:
-  CTP:
-    name: CTP
+  Min:
+    name: Min
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -25,9 +25,9 @@ datasets:
       counts:
         standard_name: counts
         units: count
-    file_type: native_msg_cla_int_l2
-  CTT:
-    name: CTT
+    file_type: native_msg_ndvi_l2
+  Max:
+    name: Max
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -40,9 +40,9 @@ datasets:
       counts:
         standard_name: counts
         units: count
-    file_type: native_msg_cla_int_l2
-  EFF:
-    name: EFF
+    file_type: native_msg_ndvi_l2
+  Mean:
+    name: Mean
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -55,9 +55,9 @@ datasets:
       counts:
         standard_name: counts
         units: count
-    file_type: native_msg_cla_int_l2
-  SCE:
-    name: SCE
+    file_type: native_msg_ndvi_l2
+  Naccum:
+    name: Naccum
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -70,4 +70,4 @@ datasets:
       counts:
         standard_name: counts
         units: count
-    file_type: native_msg_cla_int_l2    
+    file_type: native_msg_ndvi_l2    
