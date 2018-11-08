@@ -39,9 +39,9 @@ from .mpef_generic_functions import  mpefGenericFuncs
 
 logger = logging.getLogger('native_msg_scenes')
 
-class MSGScenesFileHandler(BaseFileHandler):
+class MSGclearSkyMapFileHandler(BaseFileHandler):
     def __init__(self, filename, filename_info, filetype_info):
-        super(MSGScenesFileHandler, self).__init__(filename, filename_info, filetype_info)
+        super(MSGclearSkyMapFileHandler, self).__init__(filename, filename_info, filetype_info)
         self.platform_name=filename_info['satellite']
         self.subsat=filename_info['subsat']
         self.rc_start=filename_info['start_time']
@@ -63,16 +63,32 @@ class MSGScenesFileHandler(BaseFileHandler):
         
     def _get_data_dtype(self):
         """Get the dtype of the file based on the actual available channels"""
+        self.parameters = {
+        'azi': 'RelAziMean',
+        'r06': 'aChanMean1',
+        'r08': 'aChanMean2',
+        'r16': 'aChanMean3',
+        'sza': 'SunZenMean'
+        }
+        
         lrec = [
-                ('SceneType', np.uint8),
-                ('QualityFlag', np.uint8)
-                ]
+            ('NoAccums', np.uint8),
+            ('Padding', 'S1'),
+            ('SunZenMean', np.uint16),
+            ('RelAziMean', np.uint16),
+            ('aChanMean1', np.uint16),
+            ('aChanMean2', np.uint16),
+            ('aChanMean3', np.uint16),
+            ('aChanMean4', np.uint16),
+            ]
 
         drec = np.dtype([('ImageLineNo', np.int16),
                          ('LineRecord', lrec, (self.mda['number_of_columns'],))])
-
+                         
         dt = np.dtype([('DataRecord', drec, (1,))])
 
+        dt = dt.newbyteorder('>')
+        
         return dt
     
     
@@ -82,7 +98,6 @@ class MSGScenesFileHandler(BaseFileHandler):
         with open(self.filename) as fp:
 
             data_dtype = self._get_data_dtype()
-            
             return np.memmap(fp, dtype=data_dtype,
                              shape=(self.mda['number_of_lines'],),
                              offset=self.hdr_size, mode="r")
@@ -90,12 +105,15 @@ class MSGScenesFileHandler(BaseFileHandler):
     def _read_header(self):
         """Read the header info"""
         header_record = [
-                     ('mpef_product_header', MpefHeader.mpef_product_header),
-                     ('image_structure', ImageNavigation.image_structure),
-                     ('image_navigation_noproj',
-                      ImageNavigation.image_navigation_noproj)
-                     ]
-
+        ('mpef_product_header', MpefHeader.mpef_product_header),
+        ('AccumStart', 'S16'),
+        ('AccumEnd', 'S16'),
+        ('image_structure',
+            ImageNavigation.image_structure),
+        ('image_navigation_noproj',
+            ImageNavigation.image_navigation_noproj)
+        ]
+        
         self.header = np.fromfile(self.filename,
                            dtype=header_record, count=1)
         
@@ -110,6 +128,7 @@ class MSGScenesFileHandler(BaseFileHandler):
         else:
             self.ssp_lon=0.0                
 
+        
         self.header = self.header.newbyteorder('>')
         self.mda['number_of_lines'] = self.header['image_structure']['NoLines'][0]
         self.mda['number_of_columns'] =  self.header['image_structure']['NoColumns'][0]
@@ -127,10 +146,10 @@ class MSGScenesFileHandler(BaseFileHandler):
     def get_dataset(self, dsid, info,
                     xslice=slice(None), yslice=slice(None)):
 
-        channel = dsid.name
-
+        channel = self.parameters[dsid.name]
+        
         shape = (self.mda['number_of_lines'], self.mda['number_of_columns'])
-        raw = self.dask_array['DataRecord']['LineRecord']['SceneType']
+        raw = self.dask_array['DataRecord']['LineRecord']['{}'.format(channel)]
         data=raw[:,0,:]
         
         data = da.flipud(da.fliplr((data.reshape(shape))))
@@ -139,6 +158,8 @@ class MSGScenesFileHandler(BaseFileHandler):
             dataset = None
         else:
             dataset = xarr
+            if 'r' in dsid.name:
+                dataset*=0.1
             #dataset=dataset.where(dataset<50.) 
             dataset.attrs['units'] = info['units']
             dataset.attrs['wavelength'] = info['wavelength']
