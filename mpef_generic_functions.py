@@ -22,6 +22,7 @@
 
 # This file contains generic functions to be used by MPEF MSG Binary products
 from pyresample import geometry
+import numpy as np
 
 def get_area_extent(dsid):
 
@@ -103,5 +104,15 @@ class mpefGenericFuncs(object):
 
         return area
 
+    def get_memmap(filename,data_dtype,noLines,hdrSize):
+        """Get the memory map for the SEVIRI data"""
+
+        with open(filename) as fp:
+
+            #data_dtype = self._get_data_dtype()
+            
+            return np.memmap(fp, data_dtype,
+                             shape=(noLines,),
+                             offset=hdrSize, mode="r")
        
 
