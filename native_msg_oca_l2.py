@@ -49,7 +49,11 @@ class MSGOcaFileHandler(BaseFileHandler):
         self.mda = {}
         self._read_header()
         # Prepare dask-array
-        self.dask_array = da.from_array(self._get_memmap(), chunks=(CHUNK_SIZE,))
+        self.dask_array = da.from_array(mpefGenericFuncs.get_memmap(self.filename,
+                                                                   self._get_data_dtype(),
+                                                                   self.mda['number_of_lines'],
+                                                                   self.hdr_size), chunks=(CHUNK_SIZE,))
+        #self.dask_array = da.from_array(self._get_memmap(), chunks=(CHUNK_SIZE,))
         
     @property
     def start_time(self):
