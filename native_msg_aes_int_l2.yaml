@@ -1,18 +1,18 @@
 reader:
   description: MSG Native Reader
-  name: native_msg_clearSkyMap_l2
+  name: native_msg_aes_int_l2
   sensors: [seviri]
-  default_channels: [SCE]
+  default_channels: [aot08]
   reader: !!python/name:satpy.readers.yaml_reader.FileYAMLReader
 
 file_types:
-  native_msg_clearSkyMap_l2:
-    file_reader: !!python/name:LOCAL_READERS.readers.BinaryFullProductClasses.MSGClearSkyMapFileHandler
-    file_patterns: ['ClearSkyReflMap_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
-    
+  native_msg_aes_int_l2:
+    file_reader: !!python/name:LOCAL_READERS.readers.BinaryFullProductClasses.MSGAesIntFileHandler
+    file_patterns: ['AESIntmProduct_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
+            
 datasets:
-  r06:
-    name: r06
+  aot08:
+    name: aot08
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -25,9 +25,9 @@ datasets:
       counts:
         standard_name: counts
         units: count
-    file_type: native_msg_clearSkyMap_l2
-  r08:
-    name: r08
+    file_type: native_msg_aes_int_l2
+  aot16:
+    name: aot16
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -40,9 +40,9 @@ datasets:
       counts:
         standard_name: counts
         units: count
-    file_type: native_msg_clearSkyMap_l2
-  r16:
-    name: r16
+    file_type: native_msg_aes_int_l2
+  ang:
+    name: ang
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -55,9 +55,9 @@ datasets:
       counts:
         standard_name: counts
         units: count
-    file_type: native_msg_clearSkyMap_l2
-  azi:
-    name: azi
+    file_type: native_msg_aes_int_l2     
+  qlty:
+    name: qlty
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -70,19 +70,4 @@ datasets:
       counts:
         standard_name: counts
         units: count
-    file_type: native_msg_clearSkyMap_l2
-  sza:
-    name: sza
-    resolution: 3000.403165817
-    wavelength: [0.5, 0.7, 0.9]
-    calibration:
-      #reflectance:
-      #  standard_name: toa_bidirectional_reflectance
-      #  units: "%"
-      #radiance:
-      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
-      #  units: W m-2 um-1 sr-1
-      counts:
-        standard_name: counts
-        units: count
-    file_type: native_msg_clearSkyMap_l2    
+    file_type: native_msg_aes_int_l2

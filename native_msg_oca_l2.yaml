@@ -7,7 +7,7 @@ reader:
 
 file_types:
   native_msg_oca_l2:
-    file_reader: !!python/name:LOCAL_READERS.readers.native_msg_oca_l2.MSGOcaFileHandler
+    file_reader: !!python/name:LOCAL_READERS.readers.BinaryFullProductClasses.MSGOcaFileHandler
     file_patterns: ['OCAProduct_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
     
 datasets:

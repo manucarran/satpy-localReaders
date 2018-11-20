@@ -90,9 +90,6 @@ class mpefGenericFuncs(object):
                      'proj': 'geos',
                      'units': 'm'}
 
-        #nlines = self.mda['number_of_lines']
-        # ncols = self.mda['number_of_columns']
-
         area = geometry.AreaDefinition(
             'some_area_name',
             "On-the-fly area",
@@ -106,7 +103,7 @@ class mpefGenericFuncs(object):
 
     def get_memmap(filename,data_dtype,noLines,hdrSize):
         """Get the memory map for the SEVIRI data"""
-
+        print ("!!!!!!!!!!!!!!!!!!!!!IN GENERIC MMAP!!!!!!!!!!!!!!!!!!!!!!")
         with open(filename) as fp:
 
             #data_dtype = self._get_data_dtype()
