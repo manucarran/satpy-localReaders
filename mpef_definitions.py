@@ -29,6 +29,7 @@ class GlobalTypes(object):
                       ('Revision', np.uint16)
                       ]
 
+
 class ImageNavigation(object):
 
     # 1024 bytes
@@ -73,6 +74,7 @@ class ImageNavigation(object):
                        ('NoColumns', np.int16),
                        ('NoLines', np.int16)
                        ]
+
 
 class MpefHeader(object):
     
@@ -122,3 +124,86 @@ class MpefHeader(object):
                            ('Filler', 'S20'),
                            ('RepeatCycle', 'S15'),
                            ]
+
+
+class ProdHeaders(object):    
+    prod_hdr1  = [
+            ('mpef_product_header',  MpefHeader.mpef_product_header),
+            ('image_structure', ImageNavigation.aes_image_navigation),
+        ]
+        
+    prod_hdr2 = [
+                     ('mpef_product_header', MpefHeader.mpef_product_header),
+                     ('image_structure', ImageNavigation.image_structure),
+                     ('image_navigation_noproj',
+                      ImageNavigation.image_navigation_noproj)
+                ]
+                
+    prod_hdr3 = [
+            ('mpef_product_header', MpefHeader.mpef_product_header),
+            ('AccumStart', 'S16'),
+            ('AccumEnd', 'S16'),
+            ('image_structure',
+                ImageNavigation.image_structure),
+            ('image_navigation_noproj',
+                ImageNavigation.image_navigation_noproj)
+        ]
+
+class ProdDrecs(object):
+    aesInt = [
+            ('AOT06', np.int16),
+            ('AOT08', np.int16),
+            ('AOT16', np.int16),
+            ('AngstCoef', np.int16),
+            ('Quality', np.int16)
+            ]
+            
+    claInt = [
+            ('SCE', np.uint8),
+            ('EFF', np.uint8),
+            ('CTP', np.uint16),
+            ('CTT', np.uint16),
+            ('Flags', np.uint8),
+            ('SCEPerConf', np.uint8)
+            ]
+    
+    clearSky = [
+            ('NoAccums', np.uint8),
+            ('Padding', 'S1'),
+            ('SunZenMean', np.uint16),
+            ('RelAziMean', np.uint16),
+            ('aChanMean1', np.uint16),
+            ('aChanMean2', np.uint16),
+            ('aChanMean3', np.uint16),
+            ('aChanMean4', np.uint16),
+            ]
+    
+    ndvi = [
+            ('Min', np.uint8),
+            ('Max', np.uint8),
+            ('Mean', np.uint8),
+            ('Naccum', np.uint8)
+            ]
+            
+    oca = [
+            ('Latitude', np.float32),
+            ('Longitude', np.float32),
+            ('QualityFlag', np.float32),
+            ('Phase', np.float32),
+            ('Jm', np.float32),
+            ('ULTau', np.float32),
+            ('ULCtp', np.float32),
+            ('ULRe', np.float32),
+            ('ULSnTau', np.float32),
+            ('ULSnCtp', np.float32),
+            ('ULSnRe', np.float32),
+            ('LLTau', np.float32),
+            ('LLCtp', np.float32),
+            ('LLSnTau', np.float32),
+            ('LLSnCtp', np.float32),
+            ]
+            
+    scenes = [
+                ('SceneType', np.uint8),
+                ('QualityFlag', np.uint8)
+                ]                                    

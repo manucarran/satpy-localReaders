@@ -25,7 +25,6 @@ from pyresample import geometry
 import numpy as np
 
 def get_area_extent(dsid):
-
         
         if dsid.name != 'HRV':
 
@@ -112,4 +111,17 @@ class mpefGenericFuncs(object):
                              shape=(noLines,),
                              offset=hdrSize, mode="r")
        
+    def read_header(hdr_rec,filename):
+        """Read the header info"""
+        header = np.fromfile(filename,
+                                  dtype=hdr_rec, count=1)
 
+        hdr_size = np.dtype(hdr_rec).itemsize
+
+ 
+        header = header.newbyteorder('>')
+        nlines = header['image_structure']['NoLines'][0]
+        ncols = header['image_structure']['NoColumns'][0]
+        
+        return nlines,ncols
+        
