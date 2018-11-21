@@ -9,10 +9,10 @@ file_types:
   native_msg_oca_l2:
     file_reader: !!python/name:LOCAL_READERS.readers.BinaryFullProductClasses.MSGOcaFileHandler
     file_patterns: ['OCAProduct_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
-    
+            
 datasets:
-  ctp:
-    name: ctp
+  ULCtp:
+    name: ULCtp
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -26,8 +26,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_oca_l2
-  ctp2:
-    name: ctp2
+  LLCtp:
+    name: LLCtp
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -41,8 +41,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_oca_l2
-  cot2:
-    name: cot2
+  LLTau:
+    name: LLTau
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -56,8 +56,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_oca_l2
-  ecot2:
-    name: ecot2
+  LLSnTau:
+    name: LLSnTau
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -71,8 +71,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_oca_l2
-  ectp2:
-    name: ectp2
+  LLSnCtp:
+    name: LLSnCtp
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -86,8 +86,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_oca_l2
-  ecot:
-    name: ecot
+  ULSnTau:
+    name: ULSnTau
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -101,8 +101,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_oca_l2
-  ectp:
-    name: ectp
+  ULSnCtp:
+    name: ULSnCtp
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -116,8 +116,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_oca_l2
-  cph:
-    name: cph
+  Phase:
+    name: Phase
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -131,8 +131,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_oca_l2
-  ecre:
-    name: ecre
+  ULSnRe:
+    name: ULSnRe
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -146,8 +146,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_oca_l2
-  cot:
-    name: cot
+  ULTau:
+    name: ULTau
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -161,8 +161,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_oca_l2
-  jm:
-    name: jm
+  Jm:
+    name: Jm
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -176,8 +176,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_oca_l2
-  cre:
-    name: cre
+  ULRe:
+    name: ULRe
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:

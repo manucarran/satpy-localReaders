@@ -9,10 +9,10 @@ file_types:
   native_msg_clearSkyMap_l2:
     file_reader: !!python/name:LOCAL_READERS.readers.BinaryFullProductClasses.MSGClearSkyMapFileHandler
     file_patterns: ['ClearSkyReflMap_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
-    
+ 
 datasets:
-  r06:
-    name: r06
+  aChanMean1:
+    name: aChanMean1
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -26,8 +26,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_clearSkyMap_l2
-  r08:
-    name: r08
+  aChanMean2:
+    name: aChanMean2
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -41,8 +41,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_clearSkyMap_l2
-  r16:
-    name: r16
+  aChanMean3:
+    name: aChanMean3
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -56,8 +56,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_clearSkyMap_l2
-  azi:
-    name: azi
+  RelAziMean:
+    name: RelAziMean
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:
@@ -71,8 +71,8 @@ datasets:
         standard_name: counts
         units: count
     file_type: native_msg_clearSkyMap_l2
-  sza:
-    name: sza
+  SunZenMean:
+    name: SunZenMean
     resolution: 3000.403165817
     wavelength: [0.5, 0.7, 0.9]
     calibration:

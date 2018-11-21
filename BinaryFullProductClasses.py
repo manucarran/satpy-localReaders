@@ -30,7 +30,6 @@ class MSGAesIntFileHandler(BaseFileHandler):
         self.platform_name = filename_info['satellite']
         self.subsat = filename_info['subsat']
         self.rc_start = filename_info['start_time']
-        self.header = {}
         self.mda = {}
 
         self.ssp_lon = sub_sat_dict[filename_info['subsat']]
@@ -139,9 +138,10 @@ class MSGClaIntFileHandler(BaseFileHandler):
         return dt
 
     def get_area_def(self, dsid):
-        nlines = self.mda['number_of_lines']
-        ncols = self.mda['number_of_columns']
-        return mpefGenericFuncs.get_area_def(dsid, nlines, ncols, self.ssp_lon)
+        return mpefGenericFuncs.get_area_def(dsid,
+                                             self.mda['number_of_lines'],
+                                             self.mda['number_of_columns'],
+                                             self.ssp_lon)
 
     def get_dataset(self, dsid, info,
                     xslice=slice(None), yslice=slice(None)):
@@ -189,14 +189,6 @@ class MSGClearSkyMapFileHandler(BaseFileHandler):
         self.rc_start = filename_info['start_time']
         self.mda = {}
 
-        self.parameters = {
-            'azi': 'RelAziMean',
-            'r06': 'aChanMean1',
-            'r08': 'aChanMean2',
-            'r16': 'aChanMean3',
-            'sza': 'SunZenMean'
-        }
-
         self.ssp_lon = sub_sat_dict[filename_info['subsat']]
         self.hdr_size = np.dtype(ProdHeaders.prod_hdr3).itemsize
         self.mda['number_of_lines'], self.mda['number_of_columns'] = \
@@ -231,17 +223,16 @@ class MSGClearSkyMapFileHandler(BaseFileHandler):
         return dt
 
     def get_area_def(self, dsid):
-        nlines = self.mda['number_of_lines']
-        ncols = self.mda['number_of_columns']
-        return mpefGenericFuncs.get_area_def(dsid, nlines, ncols, self.ssp_lon)
+        return mpefGenericFuncs.get_area_def(dsid,
+                                             self.mda['number_of_lines'],
+                                             self.mda['number_of_columns'],
+                                             self.ssp_lon)
 
     def get_dataset(self, dsid, info,
                     xslice=slice(None), yslice=slice(None)):
 
-        channel = self.parameters[dsid.name]
-
         shape = (self.mda['number_of_lines'], self.mda['number_of_columns'])
-        raw = self.dask_array['DataRecord']['LineRecord']['{}'.format(channel)]
+        raw = self.dask_array['DataRecord']['LineRecord']['{}'.format(dsid.name)]
         data = raw[:, 0, :]
 
         data = da.flipud(da.fliplr((data.reshape(shape))))
@@ -306,9 +297,10 @@ class MSGNdviFileHandler(BaseFileHandler):
         return dt
 
     def get_area_def(self, dsid):
-        nlines = self.mda['number_of_lines']
-        ncols = self.mda['number_of_columns']
-        return mpefGenericFuncs.get_area_def(dsid, nlines, ncols, self.ssp_lon)
+        return mpefGenericFuncs.get_area_def(dsid,
+                                             self.mda['number_of_lines'],
+                                             self.mda['number_of_columns'],
+                                             self.ssp_lon)
 
     def get_dataset(self, dsid, info,
                     xslice=slice(None), yslice=slice(None)):
@@ -348,20 +340,6 @@ class MSGOcaFileHandler(BaseFileHandler):
         self.subsat = filename_info['subsat']
         self.rc_start = filename_info['start_time']
         self.mda = {}
-        self.parameters = {
-          'cot': 'ULTau',
-          'cot2': 'LLTau',
-          'cph': 'Phase',
-          'cre': 'ULRe',
-          'ctp': 'ULCtp',
-          'ctp2': 'LLCtp',
-          'ecot': 'ULSnTau',
-          'ecot2': 'LLSnTau',
-          'ectp': 'ULSnCtp',
-          'ectp2': 'LLSnCtp',
-          'ecre': 'ULSnRe',
-          'jm': 'Jm'
-        }
 
         # OCA only contains MPH so this information has to be hardcoded for now
         self.hdr_size = np.dtype(MpefHeader.mpef_product_header).itemsize
@@ -399,8 +377,7 @@ class MSGOcaFileHandler(BaseFileHandler):
 
     def get_dataset(self, dsid, info,
                     xslice=slice(None), yslice=slice(None)):
-
-        channel = self.parameters[dsid.name]
+        channel = dsid.name
         shape = (self.mda['number_of_lines'], self.mda['number_of_columns'])
         raw = self.dask_array['DataRecord']['{}'.format(channel)]
         data = raw[:, :]
