@@ -1,0 +1,19 @@
+reader:
+  description: NetCDF4 reader for the Eumetsat MSG OCA format
+  name: nc_mtg_li
+  sensors: [seviri]
+  reader: !!python/name:satpy.readers.yaml_reader.FileYAMLReader
+
+file_types:
+    nc_mtg_li:
+        file_reader: !!python/name:LOCAL_READERS.readers.nc_mtg_li.NcLIFileHandler
+        file_patterns: ['LI-2-AFA-BODY_MET-10_20161213_1200.nc']
+datasets:
+  accumulated_flash_area:
+    name: accumulated_flash_area
+    resolution: 1000
+    wavelength: [0.5, 0.7, 0.9]
+    file_type: nc_mtg_li
+    nc_key: 'accumulated_flash_area'
+#    sensor: seviri
+
