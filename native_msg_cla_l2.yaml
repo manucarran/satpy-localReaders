@@ -1,6 +1,6 @@
 reader:
   description: MSG Native Reader
-  name: native_msg_cla_int_l2
+  name: native_msg_cla_l2
   sensors: [seviri]
   default_channels: [CLA]
   reader: !!python/name:satpy.readers.yaml_reader.FileYAMLReader
@@ -28,7 +28,7 @@ datasets:
     file_type: native_msg_cla_l2
   TotEffCloudAmount:
     name: TotEffCloudAmount
-    resolution: 3000.403165817
+    resolution: 3000.403165817/3
     wavelength: [0.5, 0.7, 0.9]
     calibration:
       #reflectance:

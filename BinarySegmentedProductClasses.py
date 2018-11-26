@@ -175,7 +175,7 @@ class MSGClaFileHandler(BaseFileHandler):
         cols = self.dask_array['DataRecord']['SegmentCol']-1
 
         datax[rows, cols] = raw[:]
-        data = da.flipud(da.fliplr(datax)
+        data = da.flipud(da.fliplr(datax))
         
         #data = da.flipud(da.fliplr((data.reshape(shape))))
         # xarr = xr.DataArray(data, dims=['y', 'x']).where(data != 0)
