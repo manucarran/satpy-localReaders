@@ -110,7 +110,20 @@ class mpefGenericFuncs(object):
             return np.memmap(fp, data_dtype,
                              shape=(noLines,),
                              offset=hdrSize, mode="r")
-       
+    
+    def get_seg_memmap(filename,data_dtype,noLines,hdrSize):
+        """Get the memory map for the SEVIRI data"""
+        print ("!!!!!!!!!!!!!!!!!!!!!IN GENERIC MMAP!!!!!!!!!!!!!!!!!!!!!!")
+        print (hdrSize)
+        print (data_dtype.itemsize)
+        with open(filename) as fp:
+
+            #data_dtype = self._get_data_dtype()
+            
+            return np.memmap(fp, data_dtype,
+                             shape=(1,),
+                             offset=hdrSize, mode="r")
+                                
     def read_header(hdr_rec,filename):
         """Read the header info"""
         header = np.fromfile(filename,
@@ -124,4 +137,6 @@ class mpefGenericFuncs(object):
         ncols = header['image_structure']['NoColumns'][0]
         
         return nlines,ncols
+        
+            
         

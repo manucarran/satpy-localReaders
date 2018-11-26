@@ -149,6 +149,16 @@ class ProdHeaders(object):
                 ImageNavigation.image_navigation_noproj)
         ]
 
+class SegProdHeaders(object):
+    
+    prod_hdr1 = [
+        ('mpef_product_header', MpefHeader.mpef_product_header),
+        ('SegmentWidth', np.int16),
+        ('SegmentHeight', np.int16),
+        ('NoSegsInProduct', np.int32)
+        ]
+        
+        
 class ProdDrecs(object):
     aesInt = [
             ('AOT06', np.int16),
@@ -207,3 +217,32 @@ class ProdDrecs(object):
                 ('SceneType', np.uint8),
                 ('QualityFlag', np.uint8)
                 ]                                    
+
+class SegProdDrecs(object):
+    
+        clarec1 = [
+            ('CloudTypes', np.uint8),
+            ('CloudAmounts', np.uint8),
+            ('CloudPhases', np.uint8),
+            ('Padding',  np.uint8),
+            ('CloudTopTemps', np.float32),
+            ('CloudTopHeights', np.float32)
+            ]
+
+        clarec2 = [
+            ('LevCloudAmount', np.uint8),
+            ('NoCloudTypes', np.uint8),
+            ('Padding',  np.uint16),
+            ('CloudStats', clarec1, (3,))
+            ]
+
+        clarec3 = [
+            ('SegmentRow', np.int32),
+            ('SegmentCol', np.int32),
+            ('Latitude', np.float32),
+            ('Longitude', np.float32),
+            ('TotEffCloudAmount', np.uint8),
+            ('QualityFlag', np.uint8),
+            ('Padding',  np.uint16),
+            ('Data', clarec2, (3,))
+            ]
