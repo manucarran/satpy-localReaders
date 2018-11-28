@@ -121,7 +121,7 @@ class mpefGenericFuncs(object):
             #data_dtype = self._get_data_dtype()
             
             return np.memmap(fp, data_dtype,
-                             shape=(1,),
+                             shape=(noLines,),
                              offset=hdrSize, mode="r")
                                 
     def read_header(hdr_rec,filename):

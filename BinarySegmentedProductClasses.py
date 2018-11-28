@@ -94,7 +94,108 @@ class MSGAesIntFileHandler(BaseFileHandler):
 
         return dataset
 
+class MSGGiiFileHandler(BaseFileHandler):
+    def __init__(self, filename, filename_info, filetype_info):
+        super(MSGGiiFileHandler, self).__init__(filename,
+                                                   filename_info,
+                                                   filetype_info)
 
+        self.platform_name = filename_info['satellite']
+        self.subsat = filename_info['subsat']
+        self.rc_start = filename_info['start_time']
+        self.mda = {}
+
+        #self.mda[232], self.mda[232] = \
+        #    mpefGenericFuncs.read_header(SegProdHeaders.prod_hdr1, filename)
+        self.mda['number_of_lines']=1238
+        self.mda['number_of_columns'] = 1238   
+        self.ssp_lon = sub_sat_dict[filename_info['subsat']]
+        self.hdr_size = np.dtype(SegProdHeaders.prod_hdr1).itemsize
+        print('hdr size',self.hdr_size)
+
+        # Prepare dask-array
+        print (self.hdr_size)
+#	print ('dddd: ',  self._get_data_dtype())
+        self.dask_array = da.from_array(
+            mpefGenericFuncs.get_seg_memmap(self.filename,
+                                        self._get_data_dtype(),
+                                        1238,
+                                        self.hdr_size),
+                                        chunks=(CHUNK_SIZE,))
+					
+    @property
+    def start_time(self):
+        return self.rc_start
+
+    @property
+    def end_time(self):
+        return self.rc_start+timedelta(minutes=15)
+					
+
+    def _get_data_dtype(self):
+        
+        print ('data',np.dtype(SegProdDrecs.gii).itemsize)
+        print ('data',np.dtype(SegProdDrecs.gii).itemsize*1532644)
+        
+        dt = np.dtype([('DataRecord', SegProdDrecs.gii, (1238,))])
+        print('KKKK: ', dt)
+        print (dt.itemsize)
+        dt = dt.newbyteorder('>')
+        return dt
+	
+    def get_area_def(self, dsid):
+        return mpefGenericFuncs.get_area_def(dsid,
+                                             self.mda['number_of_lines'],
+                                             self.mda['number_of_columns'],
+                                             self.ssp_lon)
+	
+    def get_dataset(self, dsid, info,
+                    xslice=slice(None), yslice=slice(None)):
+
+        channel = dsid.name
+        shape = (self.mda['number_of_lines'], self.mda['number_of_columns'])
+       
+     
+        raw = self.dask_array['DataRecord']['{}'.format(channel)]
+        print ('JJJ' , raw)
+        
+        
+
+        # MPEF rows and columns start with 1, not 0
+#        rows = self.dask_array['DataRecord']['SegmentRow']-1
+#        cols = self.dask_array['DataRecord']['SegmentCol']-1
+#        datax[rows, cols] = raw[:]
+
+        data = raw[:,:]
+        data = da.flipud(da.fliplr(data))
+        
+        #data = da.flipud(da.fliplr((data.reshape(shape))))
+        # xarr = xr.DataArray(data, dims=['y', 'x']).where(data != 0)
+        xarr = xr.DataArray(data, dims=['y', 'x'])
+
+        if xarr is None:
+            dataset = None
+        else:
+            dataset = xarr
+
+            if channel == 'CTT' or channel == 'CTP':
+                dataset = dataset.where(dataset != 64537.)
+            if channel == 'EFF' or channel == 'SCE':
+                dataset = dataset.where(dataset != 0.)
+            if channel == 'CTT':
+                dataset += 170
+	
+            dataset.attrs['units'] = info['units']
+            dataset.attrs['wavelength'] = info['wavelength']
+            dataset.attrs['standard_name'] = info['standard_name']
+            dataset.attrs['platform_name'] = self.platform_name
+            dataset.attrs['sensor'] = 'seviri'
+
+        return dataset
+
+	
+						
+					
 class MSGClaFileHandler(BaseFileHandler):
     def __init__(self, filename, filename_info, filetype_info):
         super(MSGClaFileHandler, self).__init__(filename,
@@ -119,7 +220,7 @@ class MSGClaFileHandler(BaseFileHandler):
         self.dask_array = da.from_array(
             mpefGenericFuncs.get_seg_memmap(self.filename,
                                         self._get_data_dtype(),
-                                        37756,
+                                        1,
                                         self.hdr_size),
                                         chunks=(CHUNK_SIZE,))
 
@@ -143,7 +244,7 @@ class MSGClaFileHandler(BaseFileHandler):
         print ('data',np.dtype(SegProdDrecs.clarec3).itemsize*37756)
         
         dt = np.dtype([('DataRecord', SegProdDrecs.clarec3, (37756,))])
-        print (dt.itemsize)
+#        print (dt.itemsize)
         dt = dt.newbyteorder('>')
         return dt
 
@@ -188,10 +289,7 @@ class MSGClaFileHandler(BaseFileHandler):
 
             if channel == 'CTT' or channel == 'CTP':
                 dataset = dataset.where(dataset != 64537.)
-            if channel == 'EFF' or channel == 'SCE':
-                dataset = dataset.where(dataset != 0.)
-            if channel == 'CTT':
-                dataset += 170
+
 
             dataset.attrs['units'] = info['units']
             dataset.attrs['wavelength'] = info['wavelength']

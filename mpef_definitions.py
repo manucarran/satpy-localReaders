@@ -246,3 +246,21 @@ class SegProdDrecs(object):
             ('Padding',  np.uint16),
             ('Data', clarec2, (3,))
             ]
+
+        gii = [
+            ('Kindex', np.float32),
+            ('KOindex', np.float32),
+            ('LiftingIndex', np.float32),
+            ('MaxBuoyancy', np.float32),
+            ('TotalPrecWat', np.float32),
+            ('PercentClear', np.float32),
+            ('Row', np.float32),
+            ('Column', np.float32),
+            ('Latitude', np.float32),
+            ('Longitude', np.float32),
+            ('SatZenithAngle', np.float32),
+            ('Layer1PrecWater', np.float32),
+            ('Layer2PrecWater', np.float32),
+            ('Layer3PrecWater', np.float32)
+            ]
+	    
