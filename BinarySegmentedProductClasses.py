@@ -115,7 +115,6 @@ class MSGGiiFileHandler(BaseFileHandler):
 
         # Prepare dask-array
         print (self.hdr_size)
-#	print ('dddd: ',  self._get_data_dtype())
         self.dask_array = da.from_array(
             mpefGenericFuncs.get_seg_memmap(self.filename,
                                         self._get_data_dtype(),
@@ -138,7 +137,6 @@ class MSGGiiFileHandler(BaseFileHandler):
         print ('data',np.dtype(SegProdDrecs.gii).itemsize*1532644)
         
         dt = np.dtype([('DataRecord', SegProdDrecs.gii, (1238,))])
-        print('KKKK: ', dt)
         print (dt.itemsize)
         dt = dt.newbyteorder('>')
         return dt
@@ -157,9 +155,7 @@ class MSGGiiFileHandler(BaseFileHandler):
        
      
         raw = self.dask_array['DataRecord']['{}'.format(channel)]
-        print ('JJJ' , raw)
-        
-        
+                
 
         # MPEF rows and columns start with 1, not 0
 #        rows = self.dask_array['DataRecord']['SegmentRow']-1
