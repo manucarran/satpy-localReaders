@@ -552,3 +552,89 @@ class MSGSstFileHandler(BaseFileHandler):
             dataset.attrs['sensor'] = 'seviri'
 
         return dataset
+
+
+class MSGFireFileHandler(BaseFileHandler):
+    def __init__(self, filename, filename_info, filetype_info):
+        super(MSGFireFileHandler, self).__init__(filename,
+                                                 filename_info,
+                                                 filetype_info)
+
+        self.platform_name = filename_info['satellite']
+        self.subsat = filename_info['subsat']
+        self.rc_start = filename_info['start_time']
+        self.mda = {}
+        self.ssp_lon = sub_sat_dict[filename_info['subsat']]
+
+        """Read the header info"""
+        self.hdr_size = np.dtype(ProdHeaders.prod_hdr2).itemsize
+        self.mda['number_of_lines'], self.mda['number_of_columns'] = \
+            mpefGenericFuncs.read_header(ProdHeaders.prod_hdr2, filename)
+
+        # Prepare dask-array
+        self.dask_array = da.from_array(
+            mpefGenericFuncs.get_memmap(self.filename,
+                                        self._get_data_dtype(),
+                                        self.mda['number_of_lines'],
+                                        self.hdr_size),
+                                        chunks=(CHUNK_SIZE,))
+
+    @property
+    def start_time(self):
+        return self.rc_start
+
+    @property
+    def end_time(self):
+        return self.rc_start+timedelta(minutes=15)
+
+    def _get_data_dtype(self):
+        """Get the dtype of the file based on the actual available channels"""
+
+        drec = np.dtype([('ImageLineNo', np.int16),
+                        ('LineRecord', ProdDrecs.fire, (3712,))])
+
+        dt = np.dtype([('DataRecord', drec, (1,))])
+        dt = dt.newbyteorder('>')
+
+        return dt
+
+    def get_area_def(self, dsid):
+        return mpefGenericFuncs.get_area_def(dsid,
+                                             self.mda['number_of_lines'],
+                                             self.mda['number_of_columns'],
+                                             self.ssp_lon)
+
+    def get_dataset(self, dsid, info,
+                    xslice=slice(None), yslice=slice(None)):
+
+        channel = dsid.name
+        shape = (self.mda['number_of_lines'], self.mda['number_of_columns'])
+        raw = self.dask_array['DataRecord']['LineRecord']['{}'.format(channel)]
+
+        tmp1 = raw[:, 0, :]
+        if (channel == 'afm'):
+            not_processed = np.where(tmp1 == 0)
+            not_processed1 = np.where(tmp1 == 3)
+        else:
+            not_processed = np.where(tmp1 == 0)
+            not_processed1 = np.where(tmp1 > 100)
+
+        data = np.array(tmp1.astype(np.float32))
+
+        data[not_processed] = np.nan
+        data[not_processed1] = np.nan
+
+        data = da.flipud(da.fliplr((data.reshape(shape))))
+        xarr = xr.DataArray(data, dims=['y', 'x'])
+
+        if xarr is None:
+            dataset = None
+        else:
+            dataset = xarr
+            dataset.attrs['units'] = info['units']
+            dataset.attrs['wavelength'] = info['wavelength']
+            dataset.attrs['standard_name'] = info['standard_name']
+            dataset.attrs['platform_name'] = self.platform_name
+            dataset.attrs['sensor'] = 'seviri'
+
+        return dataset

@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class GlobalTypes(object):
 
     # 8 bytes
@@ -67,7 +68,7 @@ class ImageNavigation(object):
                                ('LineOffset', np.int32)
                                ]
 
-                                # 8 bytes
+    # 8 bytes
     image_structure = [
                        ('NoBitsPerPixel', np.uint8),
                        ('Padding', 'S3'),
@@ -77,7 +78,7 @@ class ImageNavigation(object):
 
 
 class MpefHeader(object):
-    
+
     # 24 bytes
     images_used = [
                    ('Padding1', 'S2'),
@@ -126,19 +127,19 @@ class MpefHeader(object):
                            ]
 
 
-class ProdHeaders(object):    
-    prod_hdr1  = [
+class ProdHeaders(object):
+    prod_hdr1 = [
             ('mpef_product_header',  MpefHeader.mpef_product_header),
             ('image_structure', ImageNavigation.aes_image_navigation),
         ]
-        
+
     prod_hdr2 = [
                      ('mpef_product_header', MpefHeader.mpef_product_header),
                      ('image_structure', ImageNavigation.image_structure),
                      ('image_navigation_noproj',
                       ImageNavigation.image_navigation_noproj)
                 ]
-                
+
     prod_hdr3 = [
             ('mpef_product_header', MpefHeader.mpef_product_header),
             ('AccumStart', 'S16'),
@@ -149,16 +150,17 @@ class ProdHeaders(object):
                 ImageNavigation.image_navigation_noproj)
         ]
 
+
 class SegProdHeaders(object):
-    
+
     prod_hdr1 = [
         ('mpef_product_header', MpefHeader.mpef_product_header),
         ('SegmentWidth', np.int16),
         ('SegmentHeight', np.int16),
         ('NoSegsInProduct', np.int32)
         ]
-        
-        
+
+
 class ProdDrecs(object):
     aesInt = [
             ('AOT06', np.int16),
@@ -167,7 +169,7 @@ class ProdDrecs(object):
             ('AngstCoef', np.int16),
             ('Quality', np.int16)
             ]
-            
+
     claInt = [
             ('SCE', np.uint8),
             ('EFF', np.uint8),
@@ -176,7 +178,7 @@ class ProdDrecs(object):
             ('Flags', np.uint8),
             ('SCEPerConf', np.uint8)
             ]
-    
+
     clearSky = [
             ('NoAccums', np.uint8),
             ('Padding', 'S1'),
@@ -187,14 +189,20 @@ class ProdDrecs(object):
             ('aChanMean3', np.uint16),
             ('aChanMean4', np.uint16),
             ]
-    
+
+    fire = [
+            ('afm', np.uint8),
+            ('pad', np.uint8),
+            ('prob', np.uint16),
+            ]
+
     ndvi = [
             ('Min', np.uint8),
             ('Max', np.uint8),
             ('Mean', np.uint8),
             ('Naccum', np.uint8)
             ]
-            
+
     oca = [
             ('Latitude', np.float32),
             ('Longitude', np.float32),
@@ -212,14 +220,15 @@ class ProdDrecs(object):
             ('LLSnTau', np.float32),
             ('LLSnCtp', np.float32),
             ]
-            
+
     scenes = [
                 ('SceneType', np.uint8),
                 ('QualityFlag', np.uint8)
-                ]                                    
+                ]
+
 
 class SegProdDrecs(object):
-    
+
         clarec1 = [
             ('CloudTypes', np.uint8),
             ('CloudAmounts', np.uint8),
@@ -263,4 +272,3 @@ class SegProdDrecs(object):
             ('Layer2PrecWater', np.float32),
             ('Layer3PrecWater', np.float32)
             ]
-	    
