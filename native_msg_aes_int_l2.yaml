@@ -1,0 +1,88 @@
+reader:
+  description: MSG Native Reader
+  name: native_msg_aes_int_l2
+  sensors: [seviri]
+  default_channels: [aot08]
+  reader: !!python/name:satpy.readers.yaml_reader.FileYAMLReader
+
+file_types:
+  native_msg_aes_int_l2:
+    file_reader: !!python/name:LOCAL_READERS.readers.BinaryFullProductClasses.MSGAesIntFileHandler
+    file_patterns: ['AESIntmProduct_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
+            
+datasets:
+  AOT06:
+    name: AOT06
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_aes_int_l2
+  AOT08:
+    name: AOT08
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_aes_int_l2
+  AOT16:
+    name: AOT16
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_aes_int_l2
+  AngstCoef:
+    name: AngstCoef
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_aes_int_l2     
+  Quality:
+    name: Quality
+    resolution: 3000.403165817
+    wavelength: [0.5, 0.7, 0.9]
+    calibration:
+      #reflectance:
+      #  standard_name: toa_bidirectional_reflectance
+      #  units: "%"
+      #radiance:
+      #  standard_name: toa_outgoing_radiance_per_unit_wavelength
+      #  units: W m-2 um-1 sr-1
+      counts:
+        standard_name: counts
+        units: count
+    file_type: native_msg_aes_int_l2
