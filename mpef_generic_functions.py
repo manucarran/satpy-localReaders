@@ -102,24 +102,17 @@ class mpefGenericFuncs(object):
 
     def get_memmap(filename,data_dtype,noLines,hdrSize):
         """Get the memory map for the SEVIRI data"""
-        print ("!!!!!!!!!!!!!!!!!!!!!IN GENERIC MMAP!!!!!!!!!!!!!!!!!!!!!!")
         with open(filename) as fp:
 
-            #data_dtype = self._get_data_dtype()
-            
             return np.memmap(fp, data_dtype,
                              shape=(noLines,),
                              offset=hdrSize, mode="r")
+                             
     
     def get_seg_memmap(filename,data_dtype,noLines,hdrSize):
         """Get the memory map for the SEVIRI data"""
-        print ("!!!!!!!!!!!!!!!!!!!!!IN GENERIC MMAP!!!!!!!!!!!!!!!!!!!!!!")
-        print (hdrSize)
-        print (data_dtype.itemsize)
         with open(filename) as fp:
 
-            #data_dtype = self._get_data_dtype()
-            
             return np.memmap(fp, data_dtype,
                              shape=(noLines,),
                              offset=hdrSize, mode="r")
