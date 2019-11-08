@@ -1,0 +1,61 @@
+reader:
+  description: Reader for MSG AMV Intermediate product in native format
+  name: native_msg_amv_int_l2
+  sensors: [seviri]
+  default_channels: [AMV]
+  reader: !!python/name:satpy.readers.yaml_reader.FileYAMLReader
+
+file_types:
+  native_msg_amv_int_l2:
+    file_reader: !!python/name:LOCAL_READERS.readers.BinarySegmentedProductClasses.MSGAmvIntFileHandler
+    file_patterns: ['AMVIntmProduct_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
+
+datasets:
+  latitude:
+    name: latitude
+    sensor: seviri
+    resolution: 3712
+    file_type: native_msg_amv_int_l2
+    standard_name: latitude
+    units: degree_north
+
+  longitude:
+    name: longitude
+    sensor: seviri
+    resolution: 3712
+    file_type: native_msg_amv_int_l2
+    standard_name: longitude
+    units: degree_east
+
+  speed:
+    name: speed
+    sensor: seviri
+    resolution: 3712
+    file_type: native_msg_amv_int_l2
+    standard_name:
+    coordinates:
+      - longitude
+      - latitude
+    units:
+
+  direction:
+    name: direction
+    sensor: seviri
+    resolution: 3712
+    file_type: native_msg_amv_int_l2
+    standard_name:
+    coordinates:
+      - longitude
+      - latitude
+    units:
+
+  pressure:
+    name: pressure
+    sensor: seviri
+    resolution: 3712
+    file_type: native_msg_amv_int_l2
+    standard_name:
+    coordinates:
+      - longitude
+      - latitude
+    units:

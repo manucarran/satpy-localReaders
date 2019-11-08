@@ -162,6 +162,7 @@ class SegProdHeaders(object):
 
 
 class ProdDrecs(object):
+
     aesInt = [
             ('AOT06', np.int16),
             ('AOT08', np.int16),
@@ -227,48 +228,129 @@ class ProdDrecs(object):
                 ]
 
 
+class AuxAMVDrecs(object):
+
+    heightAss = [
+        ('Pressure', np.float32),
+        ('PressureSd', np.float32),
+        ('TempUncorr', np.float32),
+        ('TempCorr', np.float32),
+        ('TempCorrSd', np.float32),
+        ('Confidence', np.float32),
+        ('PixelFraction', np.float32)
+    ]
+
+    windSummary = [
+        ('Direction', np.float32),
+        ('Speed', np.float32)
+    ]
+
+    heightSummary = [
+        ('Pressure', np.float32),
+        ('PressureSd', np.float32),
+        ('Temperature', np.float32),
+        ('TemperatureSd', np.float32)
+    ]
+
+    bufrSummary = [
+        ('BUFRCode', np.float32),
+        ('Pressure', np.float32),
+        ('Temperature', np.float32)
+    ]
+
+
 class SegProdDrecs(object):
 
-        clarec1 = [
-            ('CloudTypes', np.uint8),
-            ('CloudAmounts', np.uint8),
-            ('CloudPhases', np.uint8),
-            ('Padding',  np.uint8),
-            ('CloudTopTemps', np.float32),
-            ('CloudTopHeights', np.float32)
-            ]
+    clarec1 = [
+        ('CloudTypes', np.uint8),
+        ('CloudAmounts', np.uint8),
+        ('CloudPhases', np.uint8),
+        ('Padding',  np.uint8),
+        ('CloudTopTemps', np.float32),
+        ('CloudTopHeights', np.float32)
+        ]
 
-        clarec2 = [
-            ('LevCloudAmount', np.uint8),
-            ('NoCloudTypes', np.uint8),
-            ('Padding',  np.uint16),
-            ('CloudStats', clarec1, (3,))
-            ]
+    clarec2 = [
+        ('LevCloudAmount', np.uint8),
+        ('NoCloudTypes', np.uint8),
+        ('Padding',  np.uint16),
+        ('CloudStats', clarec1, (3,))
+        ]
 
-        clarec3 = [
-            ('SegmentRow', np.int32),
-            ('SegmentCol', np.int32),
-            ('Latitude', np.float32),
-            ('Longitude', np.float32),
-            ('TotEffCloudAmount', np.uint8),
-            ('QualityFlag', np.uint8),
-            ('Padding',  np.uint16),
-            ('Data', clarec2, (3,))
-            ]
+    clarec3 = [
+        ('SegmentRow', np.int32),
+        ('SegmentCol', np.int32),
+        ('Latitude', np.float32),
+        ('Longitude', np.float32),
+        ('TotEffCloudAmount', np.uint8),
+        ('QualityFlag', np.uint8),
+        ('Padding',  np.uint16),
+        ('Data', clarec2, (3,))
+        ]
 
-        gii = [
-            ('Kindex', np.float32),
-            ('KOindex', np.float32),
-            ('LiftingIndex', np.float32),
-            ('MaxBuoyancy', np.float32),
-            ('TotalPrecWat', np.float32),
-            ('PercentClear', np.float32),
-            ('Row', np.float32),
-            ('Column', np.float32),
-            ('Latitude', np.float32),
-            ('Longitude', np.float32),
-            ('SatZenithAngle', np.float32),
-            ('Layer1PrecWater', np.float32),
-            ('Layer2PrecWater', np.float32),
-            ('Layer3PrecWater', np.float32)
-            ]
+    gii = [
+        ('Kindex', np.float32),
+        ('KOindex', np.float32),
+        ('LiftingIndex', np.float32),
+        ('MaxBuoyancy', np.float32),
+        ('TotalPrecWat', np.float32),
+        ('PercentClear', np.float32),
+        ('Row', np.float32),
+        ('Column', np.float32),
+        ('Latitude', np.float32),
+        ('Longitude', np.float32),
+        ('SatZenithAngle', np.float32),
+        ('Layer1PrecWater', np.float32),
+        ('Layer2PrecWater', np.float32),
+        ('Layer3PrecWater', np.float32)
+        ]
+
+    amvIntm = [
+        ('TargetID', np.int32),
+        ('Latitude', np.float32),
+        ('Longitude', np.float32),
+        ('Speed', np.float32),
+        ('Direction', np.float32),
+        ('TempUncorr', np.float32),
+        ('HeightUncorr', np.float32),
+        ('CorrMethod', np.float32),
+        ('Temperature', np.float32),
+        ('Height', np.float32),
+        ('MaxCorr', np.float32),
+        ('Row', np.uint8),
+        ('Col', np.uint8),
+        ('QI', np.uint8),
+        ('HeightError', np.uint8),
+        ('TargetType', np.uint8),
+        ('ImageEnhancement', np.uint8),
+        ('NbrColdPixels', np.int16),
+        ('QualResults', np.uint8, (12,)),
+        ('LandFrac', np.int32),
+        ('HeightAss', AuxAMVDrecs.heightAss, (19,))
+        ]
+
+    amvFinal = [
+        ('Latitude', np.float32),
+        ('Longitude', np.float32),
+        ('Speed', np.float32),
+        ('Direction', np.float32),
+        ('Temperature', np.float32),
+        ('Height', np.float32),
+        ('QI', np.uint8),
+        ('QIExcludingFcst', np.uint8),
+        ('HeightError', np.uint8),
+        ('QualResults', np.uint8, (11,)),
+        ('ChannelID', np.uint8),
+        ('RFFQuality', np.uint8),
+        ('SatZenithAngle', np.float32),
+        ('TargetType', np.uint8),
+        ('HeightConsist', np.uint8),
+        ('Pad1', (np.uint8, 2)),
+        ('WindMethod', np.int32),
+        ('LandFrac', np.int32),
+        ('LandSeaFlag', np.uint8),
+        ('Pad2', (np.uint8, 3)),
+        ('WindSum', AuxAMVDrecs.windSummary, (3,)),
+        ('HeightSum', AuxAMVDrecs.heightSummary, (19,)),
+        ('BUFRSum', AuxAMVDrecs.bufrSummary, (10,))
+        ]
