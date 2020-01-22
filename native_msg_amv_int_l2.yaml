@@ -2,60 +2,60 @@ reader:
   description: Reader for MSG AMV Intermediate product in native format
   name: native_msg_amv_int_l2
   sensors: [seviri]
-  default_channels: [AMV]
+  default_channels: [HRV, IR_108, VIS008, WV_062, WV_073]
   reader: !!python/name:satpy.readers.yaml_reader.FileYAMLReader
 
 file_types:
   native_msg_amv_int_l2:
-    file_reader: !!python/name:LOCAL_READERS.readers.BinarySegmentedProductClasses.MSGAmvIntFileHandler
-    file_patterns: ['AMVIntmProduct_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
+    file_reader: !!python/name:satpy.readers.BinaryAmvProductClasses.MSGAmvIntFileHandler
+    file_patterns: ['AMVIntmProductChan@{channel:s}_{start_time:%Y%m%d%H%M%S}Z_00_{server:s}_{satellite:s}_{mission:s}_{subsat:s}']
 
 datasets:
-  latitude:
-    name: latitude
+  Latitude:
+    name: Latitude
     sensor: seviri
-    resolution: 3712
+    resolution: 3000.403165817
     file_type: native_msg_amv_int_l2
     standard_name: latitude
     units: degree_north
 
-  longitude:
-    name: longitude
+  Longitude:
+    name: Longitude
     sensor: seviri
-    resolution: 3712
+    resolution: 3000.403165817
     file_type: native_msg_amv_int_l2
     standard_name: longitude
     units: degree_east
 
-  speed:
-    name: speed
+  Speed:
+    name: Speed
     sensor: seviri
-    resolution: 3712
+    resolution: 3000.403165817
     file_type: native_msg_amv_int_l2
     standard_name:
     coordinates:
-      - longitude
-      - latitude
+      - Longitude
+      - Latitude
     units:
 
-  direction:
-    name: direction
+  Direction:
+    name: Direction
     sensor: seviri
-    resolution: 3712
+    resolution: 3000.403165817
     file_type: native_msg_amv_int_l2
     standard_name:
     coordinates:
-      - longitude
-      - latitude
+      - Longitude
+      - Latitude
     units:
 
-  pressure:
-    name: pressure
+  Pressure:
+    name: Height
     sensor: seviri
-    resolution: 3712
+    resolution: 3000.403165817
     file_type: native_msg_amv_int_l2
     standard_name:
     coordinates:
-      - longitude
-      - latitude
+      - Longitude
+      - Latitude
     units:

@@ -25,7 +25,7 @@ from pyresample import geometry
 import numpy as np
 
 def get_area_extent(dsid):
-        
+
         if dsid.name != 'HRV':
 
             # following calculations assume grid origin is south-east corner
@@ -72,8 +72,8 @@ def get_area_extent(dsid):
             area_extent =  (-5570248.477339745, -5567248.074173927, 5567248.074173927, 5570248.477339745)
             #area_extent = (ll_c, ll_l, ur_c, ur_l)
 
-        return area_extent 
-        
+        return area_extent
+
 class mpefGenericFuncs(object):
 
     def get_area_def(dsid,nlines,ncols,lon_0):
@@ -81,7 +81,7 @@ class mpefGenericFuncs(object):
         a = 6378169.0
         b = 6356583.8
         h = 35785831.00
-        
+
         proj_dict = {'a': float(a),
                      'b': float(b),
                      'lon_0': float(lon_0),
@@ -107,8 +107,7 @@ class mpefGenericFuncs(object):
             return np.memmap(fp, data_dtype,
                              shape=(noLines,),
                              offset=hdrSize, mode="r")
-                             
-    
+
     def get_seg_memmap(filename,data_dtype,noLines,hdrSize):
         """Get the memory map for the SEVIRI data"""
         with open(filename) as fp:
@@ -116,7 +115,7 @@ class mpefGenericFuncs(object):
             return np.memmap(fp, data_dtype,
                              shape=(noLines,),
                              offset=hdrSize, mode="r")
-                                
+
     def read_header(hdr_rec,filename):
         """Read the header info"""
         header = np.fromfile(filename,
@@ -124,12 +123,8 @@ class mpefGenericFuncs(object):
 
         hdr_size = np.dtype(hdr_rec).itemsize
 
- 
         header = header.newbyteorder('>')
         nlines = header['image_structure']['NoLines'][0]
         ncols = header['image_structure']['NoColumns'][0]
-        
+
         return nlines,ncols
-        
-            
-        
